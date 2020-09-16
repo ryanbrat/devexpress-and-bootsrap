@@ -2,3 +2,20 @@
   max-width: 700px;
   margin: auto;
 }
+
+.current {
+  background: pink;
+}
+
+.sidebar {
+  height: 100vh;
+  min-width: 240px;
+  background: #eeeeee;
+  position: fixed;
+  left: 0;
+}
+
+.sidebar .nav{
+  display: flex;
+  flex-direction: column;
+}

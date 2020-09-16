@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import React, { state, useState } from "react";
 import {
   FormGroup,
   Row,
@@ -11,27 +10,73 @@ import {
   Collapse,
 } from "reactstrap";
 
-const ApplicantForm = () => {
-  const { handleSubmit } = useForm();
+const initialState = {
+  name: "",
+  email: "",
+  password: "",
+  nameError: "",
+  emailError: "",
+  passwordError: ""
+};
 
-  const onSubmit = (data) => {
-    console.log(data);
-  };
 
-  const [isOpen, setIsOpen] = useState(false);
+export default class ApplicantForm extends React.Component {
 
-  const toggle = () => setIsOpen(!isOpen);
+    state = initialState;
+  
+    handleChange = event => {
+      const isCheckbox = event.target.type === "checkbox";
+      this.setState({
+        [event.target.name]: isCheckbox
+          ? event.target.checked
+          : event.target.value
+      });
+    };
+  
+    validate = () => {
+      let nameError = "";
+      let emailError = "";
+      // let passwordError = "";
+  
+      if (!this.state.name) {
+        nameError = "name cannot be blank";
+      }
+  
+      if (!this.state.email.includes("@")) {
+        emailError = "invalid email";
+      }
+  
+      if (emailError || nameError) {
+        this.setState({ emailError, nameError });
+        return false;
+      }
+  
+      return true;
+    };
 
-  return (
+    handleSubmit = event => {
+      event.preventDefault();
+      const isValid = this.validate();
+      if (isValid) {
+        console.log(this.state);
+        // clear form
+        this.setState(initialState);
+      }
+    };
+  
+    render() {
+      return (
     <div>
       <Container className="themed-container p-4">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={this.handleSubmit}>
           <Row className="pb-2" xs={1} md={2}>
             <Col>
               <FormGroup>
                 <Label for="firstName">First Name</Label>
                 <Input id="firstName" />
+                <div>{this.state.nameError}</div>
               </FormGroup>
+
             </Col>
             <Col>
               <FormGroup>
@@ -114,13 +159,13 @@ const ApplicantForm = () => {
           <Row>
             <FormGroup className="mx-auto m-4" check>
               <Label check>
-                <Input onClick={toggle} type="checkbox" /> Mailing address is
+                <Input type="checkbox" /> Mailing address is
                 different than physical address
               </Label>
             </FormGroup>
           </Row>
           {/* mailing address is different form */}
-          <Collapse isOpen={isOpen}>
+          <Collapse>
             <FormGroup>
               <Label for="exampleAddress">Address</Label>
               <Input
@@ -160,7 +205,7 @@ const ApplicantForm = () => {
               </Col>
             </Row>
           </Collapse>
-          <Button className="float-right mt-4" type="submit"  onSubmit={handleSubmit}>
+          <Button className="float-right mt-4" type="submit" >
             Next
           </Button>
         </form>
@@ -168,5 +213,5 @@ const ApplicantForm = () => {
     </div>
   );
 };
+}
 
-export default ApplicantForm;
